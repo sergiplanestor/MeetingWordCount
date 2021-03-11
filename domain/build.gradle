@@ -32,30 +32,16 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    viewBinding {
-        enabled = true
-    }
 }
 
 dependencies {
-    // Arch layers
-    implementation project(":domain")
-
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_android"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_android"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
     kapt "androidx.hilt:hilt-compiler:$hilt_compiler"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_android_compiler"
 
     // Android
     implementation "androidx.core:core-ktx:$core_ktx"
-    implementation "androidx.appcompat:appcompat:$app_compat"
-    implementation "com.google.android.material:material:$material_components"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
 
     // Testing
     testImplementation "junit:junit:$unit_junit"

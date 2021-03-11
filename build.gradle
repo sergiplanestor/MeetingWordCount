@@ -15,6 +15,7 @@ buildscript {
     ext.hilt_android = "2.31-alpha"
     ext.hilt_compiler = "1.0.0-alpha03"
     ext.hilt_android_compiler = "2.31.2-alpha"
+    ext.hilt_viewmodel_android = "1.0.0-alpha03"
     ext.gson = "2.8.6"
 
     // Testing
