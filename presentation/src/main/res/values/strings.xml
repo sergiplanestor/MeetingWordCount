@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">MeetingWordCount</string>
 
+    <string name="find_word_hint">Start tipping to find your word…</string>
+    <string name="find_word_error">Please introduce a valid word</string>
+
     <!-- Content descriptions -->
     <string name="content_description_add_file">Add file</string>
+    <string name="content_description_submit_find">Submit find</string>
 
 </resources>
