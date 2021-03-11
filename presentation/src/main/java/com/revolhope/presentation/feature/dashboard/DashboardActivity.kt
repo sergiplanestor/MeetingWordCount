@@ -55,18 +55,16 @@ class DashboardActivity : BaseActivity() {
             binding.addFileButton.setOnClickListener {
                 showFileChooser()
             }
-            // TODO: DELETE BELOW
-            binding.addFileButton.setOnLongClickListener {
-                viewModel.reset()
-                true
-            }
         }
     }
 
     override fun initObservers() {
         super.initObservers()
-        observe(viewModel.wordCount) {
-            binding.wordCountTextView.text = "Word counter $it"
+        observe(viewModel.errorLiveData) {
+            Toast.makeText(this, "Error -> $it", Toast.LENGTH_LONG).show()
+        }
+        observe(viewModel.wordsLiveData) {
+            Toast.makeText(this, "Word count -> ${it.count()}", Toast.LENGTH_LONG).show()
         }
     }
 
