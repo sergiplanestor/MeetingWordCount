@@ -9,7 +9,10 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.revolhope.presentation.databinding.ActivityDashboardBinding
+import com.revolhope.presentation.feature.dashboard.adapter.DashboardContentAdapter
+import com.revolhope.presentation.feature.dashboard.adapter.PagerLayoutManager
 import com.revolhope.presentation.library.base.BaseActivity
 import com.revolhope.presentation.library.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +32,7 @@ class DashboardActivity : BaseActivity() {
 
     private val viewModel: DashboardViewModel by viewModels()
     private lateinit var binding: ActivityDashboardBinding
+    private lateinit var contentAdapter: DashboardContentAdapter
 
     private val isReadPermissionGranted
         get() =
@@ -46,15 +50,26 @@ class DashboardActivity : BaseActivity() {
     override fun bindViews() {
         super.bindViews()
         with(binding.wordFinder) {
-            onQueryTextChanged = {
-                Toast.makeText(this@DashboardActivity, "Text changed: $it", Toast.LENGTH_SHORT).show()
+            onQueryTextChanged = { filter ->
+                if (::contentAdapter.isInitialized) {
+                    viewModel.applyFilter(filter)?.let { contentAdapter.updateItems(it) }
+                }
             }
-            onQueryTextSubmit = {
-                Toast.makeText(this@DashboardActivity, "Text submitted: $it", Toast.LENGTH_LONG).show()
+            onQueryTextSubmit = { filter ->
+                if (::contentAdapter.isInitialized) {
+                    viewModel.applyFilter(filter)?.let { contentAdapter.updateItems(it) }
+                }
             }
             binding.addFileButton.setOnClickListener {
                 showFileChooser()
             }
+        }
+        with(binding.contentRecyclerView) {
+            layoutManager = PagerLayoutManager(
+                context = this@DashboardActivity,
+                onLastElementVisible = viewModel::fetchNextPage
+            )
+            adapter = DashboardContentAdapter().also { contentAdapter = it }
         }
     }
 
@@ -64,7 +79,7 @@ class DashboardActivity : BaseActivity() {
             Toast.makeText(this, "Error -> $it", Toast.LENGTH_LONG).show()
         }
         observe(viewModel.wordsLiveData) {
-            Toast.makeText(this, "Word count -> ${it.count()}", Toast.LENGTH_LONG).show()
+            if (::contentAdapter.isInitialized) contentAdapter.updateItems(it)
         }
     }
 
