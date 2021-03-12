@@ -5,6 +5,7 @@ import com.revolhope.domain.feature.word.model.WordModel
 
 interface WordRepository {
 
-    suspend fun getProcessedWords(rawWords: List<String>, fileName: String?): State<List<WordModel>>
+    suspend fun storeWords(rawWords: List<String>, fileName: String?): State<List<WordModel>>
 
+    suspend fun fetchWords(limit: Int): State<List<WordModel>>
 }

@@ -1,6 +1,7 @@
 package com.revolhope.data.feature.word.mapper
 
 import com.revolhope.domain.feature.word.model.WordModel
+import java.io.File
 
 object WordMapper {
 
@@ -10,9 +11,10 @@ object WordMapper {
     ): WordModel =
         WordModel(
             word = entry.key,
-            occurrences = entry.value.count(),
-            originalFileName = fileName ?: "",
-            occurrencesWords = entry.value
+            occurrences = entry.value.count() + 1, // +1 is the entry.key
+            originalFileName = parseFileName(fileName)
         )
 
+    private fun parseFileName(fileName: String?): String =
+        fileName?.substring(fileName.lastIndexOf(File.separator) + 1) ?: ""
 }

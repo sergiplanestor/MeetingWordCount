@@ -5,12 +5,11 @@ import com.revolhope.domain.feature.word.model.WordModel
 import com.revolhope.domain.feature.word.repository.WordRepository
 import javax.inject.Inject
 
-class GetProcessedWordsUseCase @Inject constructor(
+class FetchWordsUseCase @Inject constructor(
     private val wordRepository: WordRepository
 ) {
-
     suspend operator fun invoke(req: Request): State<List<WordModel>> =
-        wordRepository.getProcessedWords(req.rawWords, req.fileName)
+        wordRepository.fetchWords(req.limit)
 
-    data class Request(val rawWords: List<String>, val fileName: String?)
+    data class Request(val limit: Int)
 }
