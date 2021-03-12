@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.revolhope.presentation.R
 import com.revolhope.presentation.databinding.ActivityDashboardBinding
 import com.revolhope.presentation.feature.dashboard.adapter.DashboardContentAdapter
 import com.revolhope.presentation.feature.dashboard.adapter.PagerLayoutManager
@@ -80,6 +81,10 @@ class DashboardActivity : BaseActivity() {
         }
         observe(viewModel.wordsLiveData) {
             if (::contentAdapter.isInitialized) contentAdapter.updateItems(it)
+        }
+        observe(viewModel.wordCountLiveData) {
+            binding.wordCountTextView.text =
+                getString(R.string.word_count_summary, it.first, it.second)
         }
     }
 

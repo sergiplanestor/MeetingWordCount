@@ -28,12 +28,16 @@ class DashboardViewModel @Inject constructor(
 
     private var currentPage: Int = 1
     private val limit get() = currentPage * ITEMS_PER_PAGE
+    private var isListFiltered: Boolean = false
 
     override val errorLiveData get() = _errorLiveData
     private val _errorLiveData = MutableLiveData<String>()
 
     val wordsLiveData: LiveData<List<WordModel>> get() = _wordsLiveData
     private val _wordsLiveData = MutableLiveData<List<WordModel>>()
+
+    val wordCountLiveData: LiveData<Pair<Int, Int>> get() = _wordCountLiveData
+    private val _wordCountLiveData = MutableLiveData<Pair<Int, Int>>()
 
     fun processFileData(data: Intent, resolver: ContentResolver) {
         if (data.data != null) {
@@ -51,7 +55,10 @@ class DashboardViewModel @Inject constructor(
                     }.also {
                         handleState(
                             state = it,
-                            onSuccess = { words -> _wordsLiveData.value = words }
+                            onSuccess = { words ->
+                                _wordsLiveData.value = words
+                                notifyWordCount()
+                            }
                         )
                     }
                 } else {
@@ -66,6 +73,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun fetchNextPage() {
+        if (isListFiltered) return
         currentPage++
         launch {
             withContext(Dispatchers.IO) {
@@ -75,7 +83,10 @@ class DashboardViewModel @Inject constructor(
             }.also {
                 handleState(
                     state = it,
-                    onSuccess = { words -> _wordsLiveData.value = words }
+                    onSuccess = { words ->
+                        _wordsLiveData.value = words
+                        notifyWordCount()
+                    }
                 )
             }
         }
@@ -83,8 +94,16 @@ class DashboardViewModel @Inject constructor(
 
     fun applyFilter(query: String): List<WordModel>? =
         if (query.isBlank()) {
+            isListFiltered = false
             _wordsLiveData.value
         } else {
+            isListFiltered = true
             _wordsLiveData.value?.filter { it.word.contains(query, ignoreCase = true) }
         }
+
+    private fun notifyWordCount() {
+        _wordsLiveData.value?.let { words ->
+            _wordCountLiveData.value = words.sumBy { it.occurrences } to words.count()
+        }
+    }
 }

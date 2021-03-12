@@ -10,10 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_big"
-        android:layout_marginVertical="@dimen/margin_normal"
+        android:layout_marginVertical="@dimen/margin_small"
         app:cardCornerRadius="@dimen/default_card_corners"
         app:cardElevation="@dimen/default_card_elevation"
-        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,16 +21,19 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/margin_normal"
             android:paddingBottom="@dimen/margin_normal">
 
             <TextView
                 android:id="@+id/word_text_view"
-                style="TODO"
+                style="@style/Text.Header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_normal"
+                android:drawablePadding="@dimen/margin_normal"
                 app:drawableStartCompat="@drawable/baseline_find_in_page_24"
+                android:drawableTint="@color/dove_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +41,7 @@
 
             <TextView
                 android:id="@+id/word_occurrences_number_text_view"
-                style="TODO"
+                style="@style/Text.Hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_normal"
@@ -50,7 +52,7 @@
 
             <TextView
                 android:id="@+id/parent_file_text_view"
-                style="TODO"
+                style="@style/Text.Hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_normal"

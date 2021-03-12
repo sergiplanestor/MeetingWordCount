@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Text Size -->
+    <dimen name="text_header">18sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_hint">13sp</dimen>
+
     <!-- Margins -->
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_normal">8dp</dimen>
