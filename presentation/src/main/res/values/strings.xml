@@ -3,7 +3,8 @@
 
     <string name="find_word_hint">Start tipping to find your word…</string>
     <string name="find_word_error">Please introduce a valid word</string>
-
+    <string name="word_occurrences_number">Occurrences: %d</string>
+    <string name="word_originals_file">Original file: %s</string>
     <!-- Content descriptions -->
     <string name="content_description_add_file">Add file</string>
     <string name="content_description_submit_find">Submit find</string>
