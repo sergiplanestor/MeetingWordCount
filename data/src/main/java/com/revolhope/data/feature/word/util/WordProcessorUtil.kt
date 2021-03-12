@@ -4,29 +4,22 @@ object WordProcessorUtil {
 
     private val regexClearWord = Regex("[^\\w]")
 
-    fun filterWords(words: List<String>): Map<String, List<String>> {
-        val results = mutableMapOf<String, List<String>>()
+    fun filterWords(words: List<String>): List<Pair<String, Int>> {
+        val results = mutableListOf<Pair<String, Int>>()
         words.forEach { word ->
-            if (word.isNotBlank() && !results.keys.any { filterPredicate(it, word) }) {
-                results[word] = words.filter { filterPredicate(it, word) }
+            if (word.isNotBlank() && !results.any { areSameWord(it.first, word) }) {
+                results.add(clearWord(word) to words.count { areSameWord(it, word) })
             }
         }
         return results
     }
 
-    private fun filterPredicate(word: String, anotherWord: String) =
-        word.hashCode() != anotherWord.hashCode() && areSameWord(word, anotherWord)
+    private fun clearWord(word: String): String = word.replace(
+        regex = regexClearWord,
+        replacement = ""
+    )
 
     private fun areSameWord(word: String, anotherWord: String) =
-        word.replace(
-            regex = regexClearWord,
-            replacement = ""
-        ).equals(
-            other = anotherWord.replace(
-                regex = regexClearWord,
-                replacement = ""
-            ),
-            ignoreCase = true
-        )
+        clearWord(word).equals(other = clearWord(anotherWord), ignoreCase = true)
 
 }

@@ -6,12 +6,12 @@ import java.io.File
 object WordMapper {
 
     fun fromProcessedWordToModel(
-        entry: Map.Entry<String, List<String>>,
+        pair: Pair<String, Int>,
         fileName: String?
     ): WordModel =
         WordModel(
-            word = entry.key,
-            occurrences = entry.value.count() + 1, // +1 is the entry.key
+            word = pair.first,
+            occurrences = pair.second + 1, // +1 is the entry.key
             originalFileName = parseFileName(fileName)
         )
 

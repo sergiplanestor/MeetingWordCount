@@ -29,8 +29,8 @@ class WordRepositoryImpl @Inject constructor() : WordRepository, BaseRepositoryI
         val processedWords = mutableListOf<WordModel>()
         list.forEach {
             processedWords.addAll(
-                WordProcessorUtil.filterWords(it.second).map { entry ->
-                    WordMapper.fromProcessedWordToModel(entry, it.first)
+                WordProcessorUtil.filterWords(it.second).map { pair ->
+                    WordMapper.fromProcessedWordToModel(pair, it.first)
                 }
             )
         }
