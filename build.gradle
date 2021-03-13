@@ -2,7 +2,7 @@
 buildscript {
 
     // Classpath versions
-    ext._gradle = '4.1.2'
+    ext._gradle = "4.1.2"
     ext.kotlin_gradle = "1.4.31"
     ext.hilt_gradle = "2.28-alpha"
 
@@ -17,6 +17,7 @@ buildscript {
     ext.hilt_android_compiler = "2.31.2-alpha"
     ext.hilt_viewmodel_android = "1.0.0-alpha03"
     ext.gson = "2.8.6"
+    ext.lottie = "3.4.0"
 
     // Testing
     ext.unit_junit = "4.13.2"
