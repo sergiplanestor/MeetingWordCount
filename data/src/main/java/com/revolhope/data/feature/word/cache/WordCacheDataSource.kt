@@ -31,4 +31,8 @@ object WordCacheDataSource {
         }
         return result
     }
+
+    fun clear() {
+        wordsCache.clear()
+    }
 }

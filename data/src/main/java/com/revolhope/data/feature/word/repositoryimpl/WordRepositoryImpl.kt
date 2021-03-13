@@ -25,6 +25,12 @@ class WordRepositoryImpl @Inject constructor() : WordRepository, BaseRepositoryI
             processWords(WordCacheDataSource.fetchWords(limit))
         }
 
+    override suspend fun clearWords(): State<Boolean> =
+        statefulAction {
+            WordCacheDataSource.clear()
+            true
+        }
+
     private fun processWords(list: List<Pair<String, List<String>>>): List<WordModel> {
         val processedWords = mutableListOf<WordModel>()
         list.forEach {

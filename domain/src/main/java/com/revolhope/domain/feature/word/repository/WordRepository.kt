@@ -8,4 +8,6 @@ interface WordRepository {
     suspend fun storeWords(rawWords: List<String>, fileName: String?): State<List<WordModel>>
 
     suspend fun fetchWords(limit: Int): State<List<WordModel>>
+
+    suspend fun clearWords(): State<Boolean>
 }
