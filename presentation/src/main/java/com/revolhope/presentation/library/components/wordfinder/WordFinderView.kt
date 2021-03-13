@@ -4,13 +4,13 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.revolhope.presentation.R
 import com.revolhope.presentation.databinding.ComponentWordFinderBinding
+import com.revolhope.presentation.library.extensions.drawable
+import com.revolhope.presentation.library.extensions.inflater
 
 class WordFinderView @JvmOverloads constructor(
     context: Context,
@@ -20,38 +20,27 @@ class WordFinderView @JvmOverloads constructor(
 
     // Private fields
     private val binding: ComponentWordFinderBinding = ComponentWordFinderBinding.inflate(
-        LayoutInflater.from(context),
+        context.inflater,
         this,
         true
     )
 
-    private val endIconDrawable: Drawable? by lazy {
-        ContextCompat.getDrawable(
-            context,
-            R.drawable.ic_find_24
-        )
-    }
-
-    private val endIconDrawableError: Drawable? by lazy {
-        ContextCompat.getDrawable(
-            context,
-            R.drawable.ic_find_off_24
-        )
-    }
+    private val endIconDrawable: Drawable? by lazy { context.drawable(R.drawable.ic_clear) }
 
     // Public properties
     var onQueryTextChanged: ((query: String) -> Unit)? = null
     var onQueryTextSubmit: ((query: String) -> Unit)? = null
 
     init {
-        binding.finderInputLayout.endIconDrawable = endIconDrawable
         setupListeners()
     }
 
     private fun setupListeners() {
-        binding.finderInputLayout.setEndIconOnClickListener { onQuerySubmit() }
+        binding.finderInputLayout.setEndIconOnClickListener { binding.finderInputEditText.setText("") }
         binding.finderInputEditText.addTextChangedListener(
             onTextChanged = { text, _, _, _ ->
+                binding.finderInputLayout.endIconDrawable =
+                    if (text.isNullOrBlank()) null else endIconDrawable
                 changeValidUI(isValid = true)
                 onQueryTextChanged?.invoke(text.toString())
             }
@@ -71,11 +60,6 @@ class WordFinderView @JvmOverloads constructor(
     }
 
     private fun changeValidUI(isValid: Boolean) {
-        binding.finderInputLayout.endIconDrawable = if (isValid) {
-            endIconDrawable
-        } else {
-            endIconDrawableError
-        }
         binding.finderInputLayout.error = if (isValid) {
             null
         } else {
@@ -87,6 +71,7 @@ class WordFinderView @JvmOverloads constructor(
         actionId == EditorInfo.IME_ACTION_SEARCH || event?.action == KeyEvent.ACTION_DOWN &&
                 event.keyCode == KeyEvent.KEYCODE_ENTER
 
-    private fun isValidQuery(query: String?): Boolean = (!query.isNullOrBlank()).also(::changeValidUI)
+    private fun isValidQuery(query: String?): Boolean =
+        (!query.isNullOrBlank()).also(::changeValidUI)
 
 }
