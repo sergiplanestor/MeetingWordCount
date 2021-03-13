@@ -36,7 +36,7 @@
         android:id="@+id/content_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="word_count_text_view, content_recycler_view" />
+        app:constraint_referenced_ids="word_count_text_view, unique_word_count_text_view, content_recycler_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/content_recycler_view"

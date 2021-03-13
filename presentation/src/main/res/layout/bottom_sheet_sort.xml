@@ -47,7 +47,7 @@
             android:id="@+id/sort_alphabetic_desc_radio_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by_alphabetic_ascending" />
+            android:text="@string/sort_by_alphabetic_descending" />
 
         <RadioButton
             android:id="@+id/sort_occurrences_asc_radio_button"

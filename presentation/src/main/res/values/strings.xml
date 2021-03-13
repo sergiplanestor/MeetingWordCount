@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MeetingWordCount</string>
+    <string name="app_name_spaces">Meeting Word Count</string>
 
     <string name="permissions_required">Read permissions are required</string>
     <string name="find_word_hint">Start tipping to find your word…</string>
@@ -8,10 +9,13 @@
     <string name="word_originals_file">Original file: %s</string>
     <string name="word_count_summary">Total words\n%d</string>
     <string name="unique_word_count_summary">Unique words\n%d</string>
-    <string name="no_words_loaded_title">There are no words yet</string>
-    <string name="no_words_loaded_subtitle">Seems that any file has been loaded yet.\nStart counting words by doing click on right bottom button :)</string>
+    <string name="no_words_found_title">No words found</string>
+    <string name="no_words_found_subtitle">Seems that no file have been loaded or filter applied does not match with any word</string>
     <string name="find">Find</string>
     <string name="sort">Sort</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
     <string name="apply">Apply</string>
     <string name="apply_sort_title">Choose sorting by</string>
     <string name="sort_by_position">Position</string>
@@ -20,6 +24,9 @@
     <string name="sort_by_alphabetic_descending">Alphabetic descending</string>
     <string name="sort_by_occurrences_ascending">Occurrences ascending</string>
     <string name="sort_by_occurrences_descending">Occurrences descending</string>
+    <string name="generic_error">Oops.. Seems something went wrong</string>
+    <string name="confirmation_title">Confirmation</string>
+    <string name="clear_data_description">Are you sure to clear all data loaded?</string>
 
     <!-- Content descriptions -->
     <string name="content_description_add_file">Add file</string>

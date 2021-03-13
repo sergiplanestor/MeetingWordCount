@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.revolhope.domain.feature.word.model.WordModel
 import com.revolhope.presentation.R
 import com.revolhope.presentation.databinding.ComponentWordViewBinding
+import com.revolhope.presentation.library.extensions.inflater
 
 class WordView @JvmOverloads constructor(
     context: Context,
@@ -15,7 +16,7 @@ class WordView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val binding = ComponentWordViewBinding.inflate(
-        LayoutInflater.from(context),
+        context.inflater,
         this,
         true
     )

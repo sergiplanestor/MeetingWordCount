@@ -7,10 +7,10 @@ import android.content.pm.PackageManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.revolhope.domain.feature.word.model.WordModel
 import com.revolhope.presentation.R
@@ -19,6 +19,8 @@ import com.revolhope.presentation.feature.dashboard.adapter.DashboardContentAdap
 import com.revolhope.presentation.feature.dashboard.adapter.PagerLayoutManager
 import com.revolhope.presentation.feature.dashboard.sort.SortBottomSheet
 import com.revolhope.presentation.library.base.BaseActivity
+import com.revolhope.presentation.library.common.confirmbottomsheet.ConfirmationBottomSheet
+import com.revolhope.presentation.library.common.confirmbottomsheet.ConfirmationModel
 import com.revolhope.presentation.library.extensions.applyTint
 import com.revolhope.presentation.library.extensions.changeMenuIcon
 import com.revolhope.presentation.library.extensions.color
@@ -37,6 +39,21 @@ class DashboardActivity : BaseActivity() {
 
         // Inner constants
         private const val INTENT_FILE_TYPE = "text/plain"
+
+        fun start(baseActivity: BaseActivity) {
+            baseActivity.startActivity(
+                Intent(
+                    baseActivity,
+                    DashboardActivity::class.java
+                ).apply {
+                    putExtras(
+                        bundleOf(
+                            EXTRA_NAVIGATION_TRANSITION to NavTransition.LATERAL
+                        )
+                    )
+                }
+            )
+        }
     }
 
     private val viewModel: DashboardViewModel by viewModels()
@@ -65,7 +82,6 @@ class DashboardActivity : BaseActivity() {
         }
 
     override fun bindViews() {
-        super.bindViews()
         bindFinder()
         bindAdapter()
         onWordsReceived(emptyList())
@@ -95,6 +111,10 @@ class DashboardActivity : BaseActivity() {
                 onSortMenuClick()
                 true
             }
+            R.id.menu_clear -> {
+                onClearMenuClick()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
@@ -102,12 +122,14 @@ class DashboardActivity : BaseActivity() {
         with(binding.wordFinder) {
             onQueryTextChanged = { filter ->
                 if (::contentAdapter.isInitialized) {
-                    viewModel.applyFilter(query = filter).let { contentAdapter.updateItems(it) }
+                    viewModel.currentFilter = filter
+                    viewModel.notifyWords()
                 }
             }
             onQueryTextSubmit = { filter ->
                 if (::contentAdapter.isInitialized) {
-                    viewModel.applyFilter(query = filter).let { contentAdapter.updateItems(it) }
+                    viewModel.currentFilter = filter
+                    viewModel.notifyWords()
                 }
             }
             binding.addFileButton.setOnClickListener {
@@ -158,7 +180,19 @@ class DashboardActivity : BaseActivity() {
     private fun onSortMenuClick() {
         SortBottomSheet(
             currentSort = viewModel.currentSortType,
-            onSortApplied = { viewModel.applySort(words = displayingWords, sortType = it) }
+            onSortApplied = {
+                viewModel.currentSortType = it
+                viewModel.notifyWords(displayingWords)
+            }
+        ).show(supportFragmentManager)
+    }
+
+    private fun onClearMenuClick() {
+        ConfirmationBottomSheet(
+            model = ConfirmationModel(
+                description = getString(R.string.clear_data_description),
+                onConfirm = viewModel::clearWords
+            )
         ).show(supportFragmentManager)
     }
 
@@ -207,7 +241,7 @@ class DashboardActivity : BaseActivity() {
             resultCode == Activity.RESULT_OK &&
             data != null
         ) {
-            viewModel.processFileData(data, contentResolver)
+            viewModel.processFileData(context = this, data = data, resolver = contentResolver)
         }
     }
 }
