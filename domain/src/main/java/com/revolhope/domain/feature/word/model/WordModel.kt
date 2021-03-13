@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class WordModel(
     val id: String = UUID.randomUUID().toString(),
+    val position: Int,
     val word: String,
     val occurrences: Int,
     val originalFileName: String
