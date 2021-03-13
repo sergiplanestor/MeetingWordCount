@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".feature.dashboard.DashboardActivity"
-            android:theme="@style/Theme.MeetingWordCount.NoActionBar">
+            android:theme="@style/Theme.MeetingWordCount">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
