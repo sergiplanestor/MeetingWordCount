@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PorterDuff
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -84,6 +85,7 @@ class DashboardActivity : BaseActivity() {
     override fun bindViews() {
         bindFinder()
         bindAdapter()
+        bindButton()
         onWordsReceived(emptyList())
     }
 
@@ -132,9 +134,6 @@ class DashboardActivity : BaseActivity() {
                     viewModel.notifyWords()
                 }
             }
-            binding.addFileButton.setOnClickListener {
-                showFileChooser()
-            }
         }
     }
 
@@ -145,6 +144,13 @@ class DashboardActivity : BaseActivity() {
                 onLastElementVisible = viewModel::fetchNextPage
             )
             adapter = DashboardContentAdapter().also { contentAdapter = it }
+        }
+    }
+
+    private fun bindButton() {
+        with(binding.addFileButton) {
+            drawable.mutate().setTint(color(R.color.white))
+            setOnClickListener { showFileChooser() }
         }
     }
 

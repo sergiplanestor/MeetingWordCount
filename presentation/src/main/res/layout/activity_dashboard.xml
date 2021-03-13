@@ -69,6 +69,7 @@
         android:layout_margin="@dimen/margin_normal"
         android:contentDescription="@string/content_description_add_file"
         android:src="@drawable/baseline_source_24"
+        android:backgroundTint="@color/teal_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
