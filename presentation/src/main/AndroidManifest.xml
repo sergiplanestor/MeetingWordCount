@@ -3,15 +3,17 @@
     package="com.revolhope.presentation">
 
     <application>
-        <activity
-            android:name=".feature.dashboard.DashboardActivity"
-            android:theme="@style/Theme.MeetingWordCount">
+        <activity android:name=".feature.splash.SplashActivity"
+            android:theme="@style/Theme.MeetingWordCount.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".feature.dashboard.DashboardActivity"
+            android:theme="@style/Theme.MeetingWordCount" />
     </application>
 
 </manifest>
