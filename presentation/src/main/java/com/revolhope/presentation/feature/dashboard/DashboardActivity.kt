@@ -4,17 +4,25 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.isVisible
+import com.revolhope.domain.feature.word.model.WordModel
 import com.revolhope.presentation.R
 import com.revolhope.presentation.databinding.ActivityDashboardBinding
 import com.revolhope.presentation.feature.dashboard.adapter.DashboardContentAdapter
 import com.revolhope.presentation.feature.dashboard.adapter.PagerLayoutManager
+import com.revolhope.presentation.feature.dashboard.sort.SortBottomSheet
 import com.revolhope.presentation.library.base.BaseActivity
+import com.revolhope.presentation.library.extensions.applyTint
+import com.revolhope.presentation.library.extensions.changeMenuIcon
+import com.revolhope.presentation.library.extensions.color
+import com.revolhope.presentation.library.extensions.drawable
 import com.revolhope.presentation.library.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,6 +42,14 @@ class DashboardActivity : BaseActivity() {
     private val viewModel: DashboardViewModel by viewModels()
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var contentAdapter: DashboardContentAdapter
+    private var menu: Menu? = null
+    private val displayingWords: List<WordModel>
+        get() = if (::contentAdapter.isInitialized) {
+            contentAdapter.items
+        } else {
+            emptyList()
+        }
+
 
     private val isReadPermissionGranted
         get() =
@@ -50,21 +66,57 @@ class DashboardActivity : BaseActivity() {
 
     override fun bindViews() {
         super.bindViews()
+        bindFinder()
+        bindAdapter()
+        onWordsReceived(emptyList())
+    }
+
+    override fun initObservers() {
+        super.initObservers()
+        observe(viewModel.loaderLiveData, ::onLoaderVisibilityChanges)
+        observe(viewModel.errorLiveData, ::onErrorReceived)
+        observe(viewModel.wordsLiveData, ::onWordsReceived)
+        observe(viewModel.wordCountLiveData, ::onWordCountChanges)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        this.menu = menu
+        menuInflater.inflate(R.menu.dashboard_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.menu_find -> {
+                onFindMenuClick()
+                true
+            }
+            R.id.menu_sort -> {
+                onSortMenuClick()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    private fun bindFinder() {
         with(binding.wordFinder) {
             onQueryTextChanged = { filter ->
                 if (::contentAdapter.isInitialized) {
-                    viewModel.applyFilter(filter)?.let { contentAdapter.updateItems(it) }
+                    viewModel.applyFilter(query = filter).let { contentAdapter.updateItems(it) }
                 }
             }
             onQueryTextSubmit = { filter ->
                 if (::contentAdapter.isInitialized) {
-                    viewModel.applyFilter(filter)?.let { contentAdapter.updateItems(it) }
+                    viewModel.applyFilter(query = filter).let { contentAdapter.updateItems(it) }
                 }
             }
             binding.addFileButton.setOnClickListener {
                 showFileChooser()
             }
         }
+    }
+
+    private fun bindAdapter() {
         with(binding.contentRecyclerView) {
             layoutManager = PagerLayoutManager(
                 context = this@DashboardActivity,
@@ -74,18 +126,40 @@ class DashboardActivity : BaseActivity() {
         }
     }
 
-    override fun initObservers() {
-        super.initObservers()
-        observe(viewModel.errorLiveData) {
-            Toast.makeText(this, "Error -> $it", Toast.LENGTH_LONG).show()
+    private fun onWordsReceived(words: List<WordModel>) {
+        binding.contentGroup.isVisible = words.isNotEmpty()
+        binding.emptyStateView.isVisible = words.isEmpty()
+        if (::contentAdapter.isInitialized && words.isNotEmpty()) {
+            contentAdapter.updateItems(words)
         }
-        observe(viewModel.wordsLiveData) {
-            if (::contentAdapter.isInitialized) contentAdapter.updateItems(it)
+    }
+
+    private fun onWordCountChanges(wordCount: Pair<Int, Int>) {
+        binding.wordCountTextView.text =
+            getString(R.string.word_count_summary, wordCount.first)
+        binding.uniqueWordCountTextView.text =
+            getString(R.string.unique_word_count_summary, wordCount.second)
+    }
+
+    private fun onFindMenuClick() {
+        if (binding.wordFinder.isVisible) {
+            binding.wordFinder.isVisible = false
+            menu?.changeMenuIcon(R.id.menu_find, drawable(R.drawable.ic_find).apply {
+                applyTint(color(R.color.white))
+            })
+        } else {
+            binding.wordFinder.isVisible = true
+            menu?.changeMenuIcon(R.id.menu_find, drawable(R.drawable.ic_find_off).apply {
+                applyTint(color(R.color.white))
+            })
         }
-        observe(viewModel.wordCountLiveData) {
-            binding.wordCountTextView.text =
-                getString(R.string.word_count_summary, it.first, it.second)
-        }
+    }
+
+    private fun onSortMenuClick() {
+        SortBottomSheet(
+            currentSort = viewModel.currentSortType,
+            onSortApplied = { viewModel.applySort(words = displayingWords, sortType = it) }
+        ).show(supportFragmentManager)
     }
 
     private fun showFileChooser() {
@@ -121,7 +195,7 @@ class DashboardActivity : BaseActivity() {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showFileChooser()
                 } else {
-                    TODO("Show feedback message")
+                    onErrorReceived(getString(R.string.permissions_required))
                 }
             }
         }
@@ -134,8 +208,6 @@ class DashboardActivity : BaseActivity() {
             data != null
         ) {
             viewModel.processFileData(data, contentResolver)
-        } else {
-            TODO("Show feedback message")
         }
     }
 }

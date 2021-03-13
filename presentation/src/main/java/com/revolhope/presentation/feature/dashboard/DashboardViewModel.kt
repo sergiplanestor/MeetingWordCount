@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.revolhope.domain.feature.word.model.WordModel
 import com.revolhope.domain.feature.word.usecase.FetchWordsUseCase
 import com.revolhope.domain.feature.word.usecase.StoreWordsUseCase
+import com.revolhope.presentation.feature.dashboard.sort.SortType
 import com.revolhope.presentation.library.base.BaseViewModel
 import com.revolhope.presentation.library.extensions.readAsync
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,12 +27,20 @@ class DashboardViewModel @Inject constructor(
         private const val ITEMS_PER_PAGE = 50
     }
 
+    // Inner
     private var currentPage: Int = 1
+    var currentSortType: SortType? = null
+    private var currentFilter: String = ""
+
+    private var originalWords: List<WordModel> = emptyList()
     private val limit get() = currentPage * ITEMS_PER_PAGE
     private var isListFiltered: Boolean = false
 
-    override val errorLiveData get() = _errorLiveData
-    private val _errorLiveData = MutableLiveData<String>()
+    // LiveData
+    val errorLiveData: LiveData<String> get() = _errorLiveData
+
+    val loaderLiveData get() = _loaderLiveData
+    private val _loaderLiveData = MutableLiveData<Boolean>()
 
     val wordsLiveData: LiveData<List<WordModel>> get() = _wordsLiveData
     private val _wordsLiveData = MutableLiveData<List<WordModel>>()
@@ -43,6 +52,7 @@ class DashboardViewModel @Inject constructor(
         if (data.data != null) {
             val uri = data.data
             launch {
+                loaderLiveData.value = true
                 val content = resolver.readAsync(uri)
                 if (content != null) {
                     withContext(Dispatchers.IO) {
@@ -52,15 +62,7 @@ class DashboardViewModel @Inject constructor(
                                 fileName = uri?.lastPathSegment
                             )
                         )
-                    }.also {
-                        handleState(
-                            state = it,
-                            onSuccess = { words ->
-                                _wordsLiveData.value = words
-                                notifyWordCount()
-                            }
-                        )
-                    }
+                    }.also { handleState(state = it, onSuccess = ::notifyWords) }
                 } else {
                     // TODO: Change literal
                     _errorLiveData.value = "T_Generic error"
@@ -76,34 +78,60 @@ class DashboardViewModel @Inject constructor(
         if (isListFiltered) return
         currentPage++
         launch {
+            loaderLiveData.value = true
             withContext(Dispatchers.IO) {
                 fetchWordsUseCase.invoke(
                     FetchWordsUseCase.Request(limit)
                 )
-            }.also {
-                handleState(
-                    state = it,
-                    onSuccess = { words ->
-                        _wordsLiveData.value = words
-                        notifyWordCount()
-                    }
-                )
-            }
+            }.also { handleState(state = it, onSuccess = ::notifyWords) }
         }
     }
 
-    fun applyFilter(query: String): List<WordModel>? =
-        if (query.isBlank()) {
-            isListFiltered = false
-            _wordsLiveData.value
+    fun applyFilter(words: List<WordModel> = originalWords, query: String): List<WordModel> {
+        isListFiltered = query.isNotBlank()
+        currentFilter = query
+        return if (query.isBlank()) {
+            words
         } else {
-            isListFiltered = true
-            _wordsLiveData.value?.filter { it.word.contains(query, ignoreCase = true) }
-        }
-
-    private fun notifyWordCount() {
-        _wordsLiveData.value?.let { words ->
-            _wordCountLiveData.value = words.sumBy { it.occurrences } to words.count()
+            words.filter { it.word.contains(query, ignoreCase = true) }
         }
     }
+
+    fun applySort(words: List<WordModel> = originalWords, sortType: SortType?): List<WordModel> {
+        currentSortType = sortType
+        return sortType?.let { type ->
+            words.sortedWith(
+                when (type) {
+                    SortType.POSITION -> {
+                        compareBy { it.position }
+                    }
+                    SortType.POSITION_REVERSED -> {
+                        compareByDescending { it.position }
+                    }
+                    SortType.ALPHABETIC_ASCENDING -> {
+                        compareBy { it.word }
+                    }
+                    SortType.ALPHABETIC_DESCENDING -> {
+                        compareByDescending { it.word }
+                    }
+                    SortType.OCCURRENCES_ASCENDING -> {
+                        compareBy { it.occurrences }
+                    }
+                    SortType.OCCURRENCES_DESCENDING -> {
+                        compareByDescending { it.occurrences }
+                    }
+                }
+            )
+        } ?: words
+    }
+
+    private fun notifyWords(words: List<WordModel>) {
+        originalWords = words
+        _wordsLiveData.value = filterAndSort(words)
+        _wordCountLiveData.value = originalWords.sumBy { it.occurrences } to originalWords.count()
+        _loaderLiveData.value = false
+    }
+
+    private fun filterAndSort(words: List<WordModel>): List<WordModel> =
+        applySort(words, currentSortType).let { applyFilter(it, currentFilter) }
 }

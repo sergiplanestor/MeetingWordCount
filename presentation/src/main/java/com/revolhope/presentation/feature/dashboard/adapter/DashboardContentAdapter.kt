@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class DashboardContentAdapter : RecyclerView.Adapter<DashboardContentAdapter.ViewHolder>() {
 
-    private val items: MutableList<WordModel> = mutableListOf()
+    val items: MutableList<WordModel> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(

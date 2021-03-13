@@ -1,50 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.revolhope.presentation.library.components.wordfinder.WordFinderView
-        android:id="@+id/word_finder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_big"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar" />
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/word_count_text_view"
         style="@style/Text.Header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_big"
         android:layout_marginTop="@dimen/margin_big"
-        android:layout_marginHorizontal="@dimen/margin_big"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@id/unique_word_count_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/word_finder" />
+
+    <TextView
+        android:id="@+id/unique_word_count_text_view"
+        style="@style/Text.Header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginEnd="@dimen/margin_big"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/word_count_text_view"
+        app:layout_constraintTop_toBottomOf="@id/word_finder" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/content_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="word_count_text_view, content_recycler_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/content_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:overScrollMode="never"
         android:layout_marginTop="@dimen/margin_normal"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,5 +58,32 @@
         android:src="@drawable/baseline_source_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.revolhope.presentation.library.components.emptystate.EmptyStateView
+        android:id="@+id/empty_state_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.revolhope.presentation.library.components.loader.LoaderView
+        android:id="@+id/loader_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.revolhope.presentation.library.components.wordfinder.WordFinderView
+        android:id="@+id/word_finder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_big"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
