@@ -1,14 +1,30 @@
 <resources>
     <string name="app_name">MeetingWordCount</string>
 
+    <string name="permissions_required">Read permissions are required</string>
     <string name="find_word_hint">Start tipping to find your word…</string>
     <string name="find_word_error">Please introduce a valid word</string>
     <string name="word_occurrences_number">Occurrences: %d</string>
     <string name="word_originals_file">Original file: %s</string>
-    <string name="word_count_summary">Total words: %d\nUnique words: %d</string>
+    <string name="word_count_summary">Total words\n%d</string>
+    <string name="unique_word_count_summary">Unique words\n%d</string>
+    <string name="no_words_loaded_title">There are no words yet</string>
+    <string name="no_words_loaded_subtitle">Seems that any file has been loaded yet.\nStart counting words by doing click on right bottom button :)</string>
+    <string name="find">Find</string>
+    <string name="sort">Sort</string>
+    <string name="apply">Apply</string>
+    <string name="apply_sort_title">Choose sorting by</string>
+    <string name="sort_by_position">Position</string>
+    <string name="sort_by_position_inverted">Position reversed</string>
+    <string name="sort_by_alphabetic_ascending">Alphabetic ascending</string>
+    <string name="sort_by_alphabetic_descending">Alphabetic descending</string>
+    <string name="sort_by_occurrences_ascending">Occurrences ascending</string>
+    <string name="sort_by_occurrences_descending">Occurrences descending</string>
 
     <!-- Content descriptions -->
     <string name="content_description_add_file">Add file</string>
     <string name="content_description_submit_find">Submit find</string>
+    <string name="content_description_no_words">There are no words yet</string>
+    <string name="content_description_clear_text">Clear input text</string>
 
 </resources>
