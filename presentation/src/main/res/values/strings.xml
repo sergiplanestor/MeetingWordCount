@@ -7,6 +7,7 @@
     <string name="find_word_error">Please introduce a valid word</string>
     <string name="word_occurrences_number">Occurrences: %d</string>
     <string name="word_originals_file">Original file: %s</string>
+    <string name="file_word_count_summary">Words in file\n%d</string>
     <string name="word_count_summary">Total words\n%d</string>
     <string name="unique_word_count_summary">Unique words\n%d</string>
     <string name="no_words_found_title">No words found</string>
