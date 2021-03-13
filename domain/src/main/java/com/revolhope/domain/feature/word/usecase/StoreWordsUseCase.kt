@@ -9,7 +9,7 @@ class StoreWordsUseCase @Inject constructor(
     private val wordRepository: WordRepository
 ) {
 
-    suspend operator fun invoke(req: Request): State<List<WordModel>> =
+    suspend operator fun invoke(req: Request): State<Pair<Int, List<WordModel>>> =
         wordRepository.storeWords(req.rawWords, req.fileName)
 
     data class Request(val rawWords: List<String>, val fileName: String?)

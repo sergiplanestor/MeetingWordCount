@@ -17,6 +17,7 @@ buildscript {
     ext.hilt_android_compiler = "2.31.2-alpha"
     ext.hilt_viewmodel_android = "1.0.0-alpha03"
     ext.lifecycle_ktx = "2.3.0"
+    ext.navigation_ktx = "2.3.4"
     ext.gson = "2.8.6"
     ext.lottie = "3.4.0"
 

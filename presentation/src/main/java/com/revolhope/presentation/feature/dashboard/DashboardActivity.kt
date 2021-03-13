@@ -156,11 +156,13 @@ class DashboardActivity : BaseActivity() {
         }
     }
 
-    private fun onWordCountChanges(wordCount: Pair<Int, Int>) {
+    private fun onWordCountChanges(wordCount: Triple<Int, Int, Int>) {
+        binding.fileWordCountTextView.text =
+            getString(R.string.file_word_count_summary, wordCount.first)
         binding.wordCountTextView.text =
-            getString(R.string.word_count_summary, wordCount.first)
+            getString(R.string.word_count_summary, wordCount.second)
         binding.uniqueWordCountTextView.text =
-            getString(R.string.unique_word_count_summary, wordCount.second)
+            getString(R.string.unique_word_count_summary, wordCount.third)
     }
 
     private fun onFindMenuClick() {

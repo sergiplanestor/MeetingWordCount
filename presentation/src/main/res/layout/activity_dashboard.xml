@@ -7,7 +7,7 @@
     android:animateLayoutChanges="true">
 
     <TextView
-        android:id="@+id/word_count_text_view"
+        android:id="@+id/file_word_count_text_view"
         style="@style/Text.Header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,8 +15,21 @@
         android:layout_marginTop="@dimen/margin_big"
         android:layout_marginEnd="@dimen/margin_small"
         android:gravity="center"
-        app:layout_constraintEnd_toStartOf="@id/unique_word_count_text_view"
+        app:layout_constraintEnd_toStartOf="@id/word_count_text_view"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/word_finder" />
+
+    <TextView
+        android:id="@+id/word_count_text_view"
+        style="@style/Text.Header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@id/unique_word_count_text_view"
+        app:layout_constraintStart_toEndOf="@id/file_word_count_text_view"
         app:layout_constraintTop_toBottomOf="@id/word_finder" />
 
     <TextView
@@ -36,7 +49,7 @@
         android:id="@+id/content_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="word_count_text_view, unique_word_count_text_view, content_recycler_view" />
+        app:constraint_referenced_ids="file_word_count_text_view, word_count_text_view, unique_word_count_text_view, content_recycler_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/content_recycler_view"

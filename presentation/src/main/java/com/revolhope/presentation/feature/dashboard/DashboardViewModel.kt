@@ -35,6 +35,7 @@ class DashboardViewModel @Inject constructor(
     private var currentPage: Int = 1
     var currentSortType: SortType? = null
     var currentFilter: String = ""
+    private var wordsInFile: Int = 0
 
     private var originalWords: List<WordModel> = emptyList()
     private val limit get() = currentPage * ITEMS_PER_PAGE
@@ -48,8 +49,8 @@ class DashboardViewModel @Inject constructor(
     val wordsLiveData: LiveData<List<WordModel>> get() = _wordsLiveData
     private val _wordsLiveData = MutableLiveData<List<WordModel>>()
 
-    val wordCountLiveData: LiveData<Pair<Int, Int>> get() = _wordCountLiveData
-    private val _wordCountLiveData = MutableLiveData<Pair<Int, Int>>()
+    val wordCountLiveData: LiveData<Triple<Int, Int, Int>> get() = _wordCountLiveData
+    private val _wordCountLiveData = MutableLiveData<Triple<Int, Int, Int>>()
 
     fun processFileData(context: Context, data: Intent, resolver: ContentResolver) {
         if (data.data != null) {
@@ -65,7 +66,15 @@ class DashboardViewModel @Inject constructor(
                                 fileName = uri?.lastPathSegment
                             )
                         )
-                    }.also { handleState(state = it, onSuccess = ::onWordsReceived) }
+                    }.also { state ->
+                        handleState(
+                            state = state,
+                            onSuccess = { data ->
+                                wordsInFile += data.first
+                                onWordsReceived(data.second)
+                            }
+                        )
+                    }
                 } else {
                     _errorLiveData.value = context.getString(R.string.generic_error)
                 }
@@ -90,7 +99,11 @@ class DashboardViewModel @Inject constructor(
 
     fun notifyWords(words: List<WordModel> = originalWords) {
         _wordsLiveData.value = filterAndSort(words)
-        _wordCountLiveData.value = originalWords.sumBy { it.occurrences } to originalWords.count()
+        _wordCountLiveData.value = Triple(
+            wordsInFile,
+            originalWords.sumBy { it.occurrences },
+            originalWords.count()
+        )
         _loaderLiveData.value = false
     }
 
@@ -105,6 +118,7 @@ class DashboardViewModel @Inject constructor(
                         currentPage = 1
                         currentSortType = null
                         currentFilter = ""
+                        wordsInFile = 0
                         onWordsReceived(emptyList())
                     }
                 )
