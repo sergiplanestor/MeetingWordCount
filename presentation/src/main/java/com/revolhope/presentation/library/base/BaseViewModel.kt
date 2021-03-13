@@ -12,7 +12,7 @@ abstract class BaseViewModel : ViewModel(), CoroutineScope {
 
     private val job = Job()
 
-    abstract val errorLiveData: MutableLiveData<String>
+    protected val _errorLiveData = MutableLiveData<String>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -30,7 +30,7 @@ abstract class BaseViewModel : ViewModel(), CoroutineScope {
         when (state) {
             is State.Success -> onSuccess.invoke(state.data)
             is State.Error -> {
-                onError?.invoke(state.message) ?: state.message?.let(errorLiveData::setValue)
+                onError?.invoke(state.message) ?: state.message?.let(_errorLiveData::setValue)
             }
         }
     }
